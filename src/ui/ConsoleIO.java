@@ -1,13 +1,15 @@
 package ui;
 
+import core.Board;
 import core.Game;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
-public class ConsoleIO {
+public class ConsoleIO implements InputOutputDevice {
 
+    @Override
     public void showResult(int minesweeperGameResult) {
         switch (minesweeperGameResult) {
             case Game.GAME_WON: System.out.println("Congratulations. You won!"); break;
@@ -16,15 +18,26 @@ public class ConsoleIO {
         }
     }
 
+    @Override
     public void showBoard(int[][] board) {
         for (int y = 0; y < board[0].length; y++) {
             for (int x = 0; x < board.length; x++) {
-                System.out.print(board[x][y] + "  ");
+                System.out.print(parseCell(board[x][y]) + "  ");
             }
             System.out.println();
         }
     }
 
+    private String parseCell(int cellValue) {
+        switch (cellValue) {
+            case Board.CELL_MINE: return "*";
+            case Board.CELL_FLAG: return "F";
+            case Board.CELL_CLOSED: return "#";
+        }
+        return String.valueOf(cellValue);
+    }
+
+    @Override
     public UserInput getUserInput(int boardWidth, int boardHeight) {
         System.out.print("Enter cell X. ");
         int cellX = getNumberFromUserInRange(0, boardWidth);
