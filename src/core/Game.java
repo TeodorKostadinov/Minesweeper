@@ -1,16 +1,17 @@
 package core;
 
+import ui.UserInput;
+
 public class Game {
 
     public static final int GAME_WON = 1;
     public static final int GAME_LOST = 2;
     public static final int GAME_ACTIVE = 3;
 
-    int[][] board;
+    private Board board;
 
     public Game(int boardWidth, int boardHeight, int mineCount) {
-        //TODO
-        this.board = new int[boardWidth][boardHeight];
+        this.board = new Board(boardWidth, boardHeight, mineCount);
     }
 
     public boolean isActive() {
@@ -18,19 +19,30 @@ public class Game {
     }
 
     public int getResult() {
-        //TODO
+        if(board.hasOpenMine()) {
+            return GAME_LOST;
+        } else if(board.areAllMinesFlagged()) {
+            return GAME_WON;
+        }
         return GAME_ACTIVE;
     }
 
     public int[][] getBoard() {
-        return board;
+        return board.getVisibleBoard();
     }
 
     public int getBoardWidth() {
-        return board.length;
+        return board.getWidth();
     }
 
     public int getBoardHeight() {
-        return board[0].length;
+        return board.getHeight();
+    }
+
+    public void executeMove(UserInput userInput) {
+        switch (userInput.getAction()) {
+            case UserInput.ACTION_OPEN: board.openCell(userInput.getCellX(), userInput.getCellY()); break;
+            case UserInput.ACTION_FLAG: board.flagCell(userInput.getCellX(), userInput.getCellY()); break;
+        }
     }
 }

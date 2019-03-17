@@ -19,7 +19,7 @@ public class ConsoleIO {
     public void showBoard(int[][] board) {
         for (int y = 0; y < board[0].length; y++) {
             for (int x = 0; x < board.length; x++) {
-                System.out.print(board[x][y]);
+                System.out.print(board[x][y] + "  ");
             }
             System.out.println();
         }
@@ -63,7 +63,7 @@ public class ConsoleIO {
         return IntStream.of(validValues).anyMatch(x -> x == number);
     }
 
-    public int getNumberFromUser() {
+    private int getNumberFromUser() {
         int input;
         try {
             input = new Scanner(System.in).nextInt();
