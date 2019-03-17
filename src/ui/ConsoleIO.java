@@ -2,6 +2,10 @@ package ui;
 
 import core.Game;
 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+import java.util.stream.IntStream;
+
 public class ConsoleIO {
 
     public void showResult(int minesweeperGameResult) {
@@ -10,5 +14,63 @@ public class ConsoleIO {
             case Game.GAME_LOST: System.out.println("Mine exploded. You lost!"); break;
             default: System.out.println("Unknown state.");
         }
+    }
+
+    public void showBoard(int[][] board) {
+        for (int y = 0; y < board[0].length; y++) {
+            for (int x = 0; x < board.length; x++) {
+                System.out.print(board[x][y]);
+            }
+            System.out.println();
+        }
+    }
+
+    public UserInput getUserInput(int boardWidth, int boardHeight) {
+        System.out.print("Enter cell X. ");
+        int cellX = getNumberFromUserInRange(0, boardWidth);
+        System.out.print("Enter cell Y. ");
+        int cellY = getNumberFromUserInRange(0, boardHeight);
+        System.out.print("Enter cell action. 0-pen or f-1-ag. ");
+        int action = getNumberFromUserInList(UserInput.ACTION_OPEN, UserInput.ACTION_FLAG);
+        return new UserInput(cellX, cellY, action);
+    }
+
+    /**
+     * Gets a number, entered in the console
+     * @param minValue the minimal valid input
+     * @param maxValueExcluded the max valid input, excluding this number
+     * @return the entered number
+     */
+    private int getNumberFromUserInRange(int minValue, int maxValueExcluded) {
+        int inputNumber;
+        do {
+            System.out.print(String.format("Number should be from %d to %d. ", minValue, maxValueExcluded - 1));
+            inputNumber = getNumberFromUser();
+        } while (inputNumber < minValue || inputNumber >= maxValueExcluded);
+        return inputNumber;
+    }
+
+    private int getNumberFromUserInList(int...validValues) {
+        int inputNumber;
+        do {
+            System.out.print("Number should be valid. ");
+            inputNumber = getNumberFromUser();
+        } while (!isNumberInArray(inputNumber, validValues));
+        return inputNumber;
+    }
+
+    private boolean isNumberInArray(int number, int[] validValues) {
+        return IntStream.of(validValues).anyMatch(x -> x == number);
+    }
+
+    public int getNumberFromUser() {
+        int input;
+        try {
+            input = new Scanner(System.in).nextInt();
+        } catch (InputMismatchException exception) {
+            System.out.println("Please, enter numbers only.");
+            return getNumberFromUser();
+        }
+        return input;
     }
 }
